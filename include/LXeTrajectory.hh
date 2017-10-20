@@ -23,60 +23,65 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// $Id: LXePrimaryGeneratorAction.cc 94307 2015-11-11 13:42:46Z gcosmo $
+// $Id: LXeTrajectory.hh 72349 2013-07-16 12:13:16Z gcosmo $
 //
-/// \file LXePrimaryGeneratorAction.cc
-/// \brief Implementation of the LXePrimaryGeneratorAction class
+/// \file optical/LXe/include/LXeTrajectory.hh
+/// \brief Definition of the LXeTrajectory class
+//
+#ifndef LXeTrajectory_h
+#define LXeTrajectory_h 1
 
-#include "LXePrimaryGeneratorAction.hh"
-
-#include "G4LogicalVolumeStore.hh"
-#include "G4LogicalVolume.hh"
-#include "G4Box.hh"
-#include "G4RunManager.hh"
-#include "G4ParticleGun.hh"
-#include "G4ParticleTable.hh"
+#include "G4Trajectory.hh"
+#include "G4Allocator.hh"
+#include "G4ios.hh"
+#include "globals.hh"
 #include "G4ParticleDefinition.hh"
-#include "G4SystemOfUnits.hh"
-#include "Randomize.hh"
+#include "G4TrajectoryPoint.hh"
+#include "G4Track.hh"
+#include "G4Step.hh"
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+class G4Polyline;                   // Forward declaration.
 
-LXePrimaryGeneratorAction::LXePrimaryGeneratorAction()
-: G4VUserPrimaryGeneratorAction(),
-  fParticleGun(0)
+class LXeTrajectory : public G4Trajectory
 {
-  G4int n_particle = 1;
-  fParticleGun  = new G4ParticleGun(n_particle);
+  public:
 
-  // default particle kinematic
-  G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
-  G4String particleName;
-  G4ParticleDefinition* particle = particleTable->FindParticle(particleName="e-");
-  fParticleGun->SetParticleDefinition(particle);
-  fParticleGun->SetParticlePosition(G4ThreeVector(0.,0.,0.));
-  fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0.,0.,1.));
-  fParticleGun->SetParticleEnergy(2.5*MeV);
+    LXeTrajectory();
+    LXeTrajectory(const G4Track* aTrack);
+    LXeTrajectory(LXeTrajectory &);
+    virtual ~LXeTrajectory();
+ 
+    virtual void DrawTrajectory() const;
+ 
+    inline void* operator new(size_t);
+    inline void  operator delete(void*);
+
+    void SetDrawTrajectory(G4bool b){fDrawit=b;}
+    void WLS(){fWls=true;}
+    void SetForceDrawTrajectory(G4bool b){fForceDraw=b;}
+    void SetForceNoDrawTrajectory(G4bool b){fForceNoDraw=b;}
+
+  private:
+
+    G4bool fWls;
+    G4bool fDrawit;
+    G4bool fForceNoDraw;
+    G4bool fForceDraw;
+    G4ParticleDefinition* fParticleDefinition;
+};
+
+extern G4ThreadLocal G4Allocator<LXeTrajectory>* LXeTrajectoryAllocator;
+
+inline void* LXeTrajectory::operator new(size_t)
+{
+  if(!LXeTrajectoryAllocator)
+      LXeTrajectoryAllocator = new G4Allocator<LXeTrajectory>;
+  return (void*)LXeTrajectoryAllocator->MallocSingle();
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-LXePrimaryGeneratorAction::~LXePrimaryGeneratorAction()
+inline void LXeTrajectory::operator delete(void* aTrajectory)
 {
-  delete fParticleGun;
+  LXeTrajectoryAllocator->FreeSingle((LXeTrajectory*)aTrajectory);
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-void LXePrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
-{
-  //this function is called at the begining of ecah event
-  //
-
-  
-
-  fParticleGun->GeneratePrimaryVertex(anEvent);
-}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
+#endif

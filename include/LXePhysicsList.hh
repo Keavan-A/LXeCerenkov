@@ -28,10 +28,19 @@
 /// \file B3PhysicsList.hh
 /// \brief Definition of the B3PhysicsList class
 
+
 #ifndef LXePhysicsList_h
 #define LXePhysicsList_h 1
 
 #include "G4VModularPhysicsList.hh"
+
+#include "G4PhotoElectricEffect.hh"
+#include "G4ComptonScattering.hh"
+#include "G4GammaConversion.hh"
+#include "G4eMultipleScattering.hh"
+#include "G4eIonisation.hh"
+#include "G4eBremsstrahlung.hh"
+#include "G4eplusAnnihilation.hh"
 
 /// Modular physics list
 ///
@@ -47,9 +56,48 @@ public:
   virtual ~LXePhysicsList();
 
   virtual void SetCuts();
+  //virtual void ConstructParticle();
+  //virtual void ConstructProcess();
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 #endif
 
+/*
+#ifndef LXePhysicsList_h
+#define LXePhysicsList_h 1
+ 
+#include "globals.hh"
+#include "G4ios.hh"
+ 
+#include "G4VPhysicsConstructor.hh"
+ 
+#include "G4PhotoElectricEffect.hh"
+#include "G4ComptonScattering.hh"
+#include "G4GammaConversion.hh"
+#include "G4eMultipleScattering.hh"
+#include "G4eIonisation.hh"
+#include "G4eBremsstrahlung.hh"
+#include "G4eplusAnnihilation.hh"
+
+class LXePhysicsList : public G4VPhysicsConstructor
+{
+public:
+LXePhysicsList();
+virtual ~LXePhysicsList();
+virtual void SetCuts();
+public:
+// This method will be invoked in the Construct() method.
+// each particle type will be instantiated
+virtual void ConstructParticle();
+  
+// This method will be invoked in the Construct() method.
+// each physics process will be instantiated and
+// registered to the process manager of each particle type
+virtual void ConstructProcess();
+ 
+};
+ 
+#endif
+*/

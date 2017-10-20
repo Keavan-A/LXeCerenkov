@@ -63,8 +63,33 @@ G4VPhysicalVolume* LXeDetectorConstruction::Construct()
   // Envelope parameters
   //
   G4double env_sizeXY = 3*cm, env_sizeZ = 4.5*cm;
-  G4Material* env_mat = nist->FindOrBuildMaterial("G4_lXe");
-   
+  G4Material* LXe = nist->FindOrBuildMaterial("G4_lXe");
+  
+  const G4int NUMENTRIES = 9;
+  
+  G4double LXe_PP[NUMENTRIES] = {6.6*eV,6.7*eV,6.8*eV,6.9*eV,7.0*eV, 7.1*eV,7.2*eV,7.3*eV,7.4*eV};
+  
+  G4double LXe_SCINT[NUMENTRIES] = {0.000134, 0.004432, 0.053991, 0.241971, 0.398942, 0.000134, 0.004432, 0.053991,0.241971};
+  
+  G4double LXe_RIND[NUMENTRIES] = { 1.57, 1.57, 1.57, 1.57, 1.57, 1.57, 1.57, 1.57, 1.57};
+  
+  G4double LXe_ABSL[NUMENTRIES] = { 35.*cm, 35.*cm, 35.*cm, 35.*cm, 35.*cm, 35.*cm, 35.*cm, 35.*cm, 35.*cm };
+  
+  G4MaterialPropertiesTable* LXe_MPT = new G4MaterialPropertiesTable();
+  /*
+  //LXe_MPT -> AddProperty("FASTCOMPONENT",LXe_PP, LXe_SCINT, NUMENTRIES);
+  */
+  LXe_MPT -> AddProperty("RINDEX", LXe_PP, LXe_RIND, NUMENTRIES);
+  /*
+  LXe_MPT -> AddProperty("ABSLENGTH",LXe_PP, LXe_ABSL, NUMENTRIES);
+  LXe_MPT -> AddConstProperty("RESOLUTIONSCALE", 1.0);
+ 
+  //LXe_MPT -> AddConstProperty ("SCINTILLATIONYIELD", 100./MeV);
+  LXe_MPT -> AddConstProperty("FASTTIMECONSTANT",45.*ns);
+  LXe_MPT -> AddConstProperty("YIELDRATIO",1.0);
+  */
+  LXe -> SetMaterialPropertiesTable(LXe_MPT);
+  G4Material* env_mat = LXe;
   // Option to switch on/off checking of volumes overlaps
   //
   G4bool checkOverlaps = true;
@@ -74,7 +99,7 @@ G4VPhysicalVolume* LXeDetectorConstruction::Construct()
   //
   G4double world_sizeXY = 1.2*env_sizeXY;
   G4double world_sizeZ  = 1.2*env_sizeZ;
-  G4Material* world_mat = nist->FindOrBuildMaterial("G4_Fe");
+  G4Material* world_mat = LXe;//nist->FindOrBuildMaterial("G4_Fe");
   
   G4Box* solidWorld =    
     new G4Box("World",                       //its name
@@ -127,9 +152,10 @@ G4VPhysicalVolume* LXeDetectorConstruction::Construct()
   G4ThreeVector pos4 = G4ThreeVector(-10*mm, 0, 9*mm);
   G4ThreeVector pos5 = G4ThreeVector(10*mm, 0, -9*mm);  
   G4ThreeVector pos6 = G4ThreeVector(-10*mm, 0, -9*mm);
-        
+      
   G4Box* vuv4shape = new G4Box("vuv4", 7.5*mm, 7.5*mm, 1*mm);
   G4LogicalVolume* vuv4logic = new G4LogicalVolume(vuv4shape, silicon, "vuv4");
+/*
   G4RotationMatrix* rot1 = new G4RotationMatrix(); 
   rot1->rotateY(90*degree);              
   new G4PVPlacement(0, pos1, vuv4logic, "vuv4", logicEnv, 0, checkOverlaps);
@@ -138,7 +164,7 @@ G4VPhysicalVolume* LXeDetectorConstruction::Construct()
   new G4PVPlacement(rot1, pos4, vuv4logic, "vuv4", logicEnv, 0, checkOverlaps);
   new G4PVPlacement(rot1, pos5, vuv4logic, "vuv4", logicEnv, 0, checkOverlaps);
   new G4PVPlacement(rot1, pos6, vuv4logic, "vuv4", logicEnv, 0, checkOverlaps);
-
+*/
 
   //
   fScoringVolume = vuv4logic;

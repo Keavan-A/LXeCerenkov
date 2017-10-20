@@ -49,6 +49,8 @@ set(LXECERENKOV_SCRIPTS
   init_vis.mac
   run1.mac
   run2.mac
+  1_25MeV.mac
+  2_5MeV.mac
   vis.mac
   )
 
