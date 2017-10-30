@@ -27,6 +27,7 @@
 //
 /// \file LXeCerenkov.cc
 
+
 #include "LXeDetectorConstruction.hh"
 #include "LXePhysicsList.hh"
 #include "LXeActionInitialization.hh"
@@ -38,7 +39,7 @@
 #endif
 
 #include "G4UImanager.hh"
-#include "QBBC.hh"
+//#include "QBBC.hh"
 
 #include "G4VisExecutive.hh"
 #include "G4UIExecutive.hh"
@@ -63,7 +64,7 @@ int main(int argc,char** argv)
   //
 #ifdef G4MULTITHREADED
   G4MTRunManager* runManager = new G4MTRunManager;
-  runManager->SetNumberOfThreads(8);
+  runManager->SetNumberOfThreads(1);//***************************
 #else
   G4RunManager* runManager = new G4RunManager;
 #endif

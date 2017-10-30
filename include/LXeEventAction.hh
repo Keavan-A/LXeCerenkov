@@ -33,11 +33,15 @@
 
 #include "G4UserEventAction.hh"
 #include "globals.hh"
-
+#include "G4Step.hh"
 class LXeRunAction;
+//class G4Step;
 
 /// Event action class
 ///
+
+
+
 
 class LXeEventAction : public G4UserEventAction
 {
@@ -49,9 +53,20 @@ class LXeEventAction : public G4UserEventAction
     virtual void EndOfEventAction(const G4Event* event);
 
     void AddEdep(G4double edep) { fEdep += edep; }
+    static std::vector <G4double> getCerenEnergies();
+    static unsigned long getNumCerenEnergies();
 
-  private:
+    static void addCerenEnergy(G4double NRG);
+
+    static std::vector <G4double> getScintEnergies();
+    static unsigned long getNumScintEnergies();
+    static void addScintEnergy(G4double NRG);
+
+    virtual void resetCeren();
+    virtual void resetScint();
+private:
     LXeRunAction* fRunAction;
+    //G4Step* fStep;
     G4double     fEdep;
 };
 

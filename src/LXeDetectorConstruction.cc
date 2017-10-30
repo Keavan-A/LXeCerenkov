@@ -76,19 +76,21 @@ G4VPhysicalVolume* LXeDetectorConstruction::Construct()
   G4double LXe_ABSL[NUMENTRIES] = { 35.*cm, 35.*cm, 35.*cm, 35.*cm, 35.*cm, 35.*cm, 35.*cm, 35.*cm, 35.*cm };
   
   G4MaterialPropertiesTable* LXe_MPT = new G4MaterialPropertiesTable();
-  /*
-  //LXe_MPT -> AddProperty("FASTCOMPONENT",LXe_PP, LXe_SCINT, NUMENTRIES);
-  */
+  
+  LXe_MPT -> AddProperty("FASTCOMPONENT",LXe_PP, LXe_SCINT, NUMENTRIES);
+  LXe_MPT -> AddProperty("SLOWCOMPONENT",LXe_PP, LXe_SCINT, NUMENTRIES);
   LXe_MPT -> AddProperty("RINDEX", LXe_PP, LXe_RIND, NUMENTRIES);
-  /*
   LXe_MPT -> AddProperty("ABSLENGTH",LXe_PP, LXe_ABSL, NUMENTRIES);
   LXe_MPT -> AddConstProperty("RESOLUTIONSCALE", 1.0);
  
-  //LXe_MPT -> AddConstProperty ("SCINTILLATIONYIELD", 100./MeV);
-  LXe_MPT -> AddConstProperty("FASTTIMECONSTANT",45.*ns);
+  LXe_MPT -> AddConstProperty ("SCINTILLATIONYIELD", 68000/MeV);//  was 100 before
+  LXe_MPT -> AddConstProperty("FASTTIMECONSTANT",20.*ns);
+  LXe_MPT -> AddConstProperty("SLOWTIMECONSTANT",45.*ns);
   LXe_MPT -> AddConstProperty("YIELDRATIO",1.0);
-  */
+  
   LXe -> SetMaterialPropertiesTable(LXe_MPT);
+  //LXe->GetIonisation()->SetBirksConstant(0.126*mm/MeV);
+
   G4Material* env_mat = LXe;
   // Option to switch on/off checking of volumes overlaps
   //
@@ -99,7 +101,7 @@ G4VPhysicalVolume* LXeDetectorConstruction::Construct()
   //
   G4double world_sizeXY = 1.2*env_sizeXY;
   G4double world_sizeZ  = 1.2*env_sizeZ;
-  G4Material* world_mat = LXe;//nist->FindOrBuildMaterial("G4_Fe");
+  G4Material* world_mat = nist->FindOrBuildMaterial("G4_Fe");
   
   G4Box* solidWorld =    
     new G4Box("World",                       //its name

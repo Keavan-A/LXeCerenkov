@@ -39,16 +39,20 @@
 
 #include "G4DecayPhysics.hh"
 #include "G4RadioactiveDecayPhysics.hh"
-#include "G4EmStandardPhysics.hh"
+
 
 
 #include "G4EmLowEPPhysics.hh"
-#include "G4Cerenkov.hh"
+#include "G4EmStandardPhysics.hh"
+
 #include "G4ProcessManager.hh"
 #include "G4OpticalPhysics.hh"
-#include "G4OpticalProcessIndex.hh"
-#include "G4SystemOfUnits.hh"
 
+#include "G4SystemOfUnits.hh"
+/*
+
+#include "G4Cerenkov.hh"
+#include "G4OpticalProcessIndex.hh"
 #include "G4ParticleDefinition.hh"
 #include "G4ParticleTable.hh"
  
@@ -59,6 +63,7 @@
  
 #include "G4NeutrinoE.hh"
 #include "G4AntiNeutrinoE.hh"
+ */
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 LXePhysicsList::LXePhysicsList() 
@@ -74,19 +79,20 @@ LXePhysicsList::LXePhysicsList()
 
   // EM physics
   RegisterPhysics(new G4EmLowEPPhysics());
+  //RegisterPhysics(new G4EmStandardPhysics());
 
   // Optical Physics
   G4OpticalPhysics* opticalPhysics = new G4OpticalPhysics();
-  RegisterPhysics( opticalPhysics );
   
   //opticalPhysics->SetWLSTimeProfile("delta");
-  opticalPhysics->SetScintillationYieldFactor(1.0);
+  opticalPhysics->SetScintillationYieldFactor(1.0);// Percentage of scintillation light we actually produce
   opticalPhysics->SetScintillationExcitationRatio(0.0);
-  opticalPhysics->SetMaxNumPhotonsPerStep(100);
+  opticalPhysics->SetMaxNumPhotonsPerStep(1);
   opticalPhysics->SetMaxBetaChangePerStep(1.0);
   opticalPhysics->SetTrackSecondariesFirst(kCerenkov,true);
   opticalPhysics->SetTrackSecondariesFirst(kScintillation,true);
   
+  RegisterPhysics( opticalPhysics );
   /* 
   G4Cerenkov* theCerenkovProcess = new G4Cerenkov("Cerenkov");
   theCerenkovProcess->SetTrackSecondariesFirst(true);

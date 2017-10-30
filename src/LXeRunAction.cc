@@ -41,7 +41,10 @@
 #include "G4UnitsTable.hh"
 #include "G4SystemOfUnits.hh"
 
+
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
 
 LXeRunAction::LXeRunAction()
 : G4UserRunAction(),
@@ -74,11 +77,14 @@ LXeRunAction::~LXeRunAction()
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 void LXeRunAction::BeginOfRunAction(const G4Run*)
-{ 
+{
   // inform the runManager to save random number seed
   G4RunManager::GetRunManager()->SetRandomNumberStore(false);
 
   // reset accumulables to their initial values
+
+
+  // possibly use this to store energies until they are ready to be written?
   G4AccumulableManager* accumulableManager = G4AccumulableManager::Instance();
   accumulableManager->Reset();
 
@@ -161,4 +167,3 @@ void LXeRunAction::AddEdep(G4double edep)
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-

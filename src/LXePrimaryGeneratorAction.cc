@@ -72,9 +72,6 @@ void LXePrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 {
   //this function is called at the begining of ecah event
   //
-
-  
-
   fParticleGun->GeneratePrimaryVertex(anEvent);
 }
 
