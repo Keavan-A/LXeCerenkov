@@ -64,16 +64,26 @@ G4VPhysicalVolume* LXeDetectorConstruction::Construct()
   //
   G4double env_sizeXY = 3*cm, env_sizeZ = 4.5*cm;
   G4Material* LXe = nist->FindOrBuildMaterial("G4_lXe");
+
+  const G4int NUMENTRIES = 20;
+  //const G4int NUMENTRIES = 9;
   
-  const G4int NUMENTRIES = 9;
+  //G4double LXe_PP[NUMENTRIES] = {6.6*eV,6.7*eV,6.8*eV,6.9*eV,7.0*eV, 7.1*eV,7.2*eV,7.3*eV,7.4*eV};
+  G4double LXe_PP[NUMENTRIES] = { 2.0*eV, 2.5*eV, 3.0*eV, 3.5*eV,
+                                  4.0*eV, 4.5*eV, 5.0*eV, 5.5*eV, 6.0*eV,
+                                  6.6*eV,6.7*eV,6.8*eV,6.9*eV,7.0*eV, 7.1*eV,7.2*eV,7.3*eV,7.4*eV,
+                                  7.7*eV,8.0*eV};
+  G4double LXe_SCINT[NUMENTRIES] = {0,0,0,0,0,0,0,0,0,
+                  0.000134, 0.004432, 0.053991, 0.241971, 0.398942, 0.38134, 0.32432, 0.283991,0.241971,
+                                    0.045,0.0005};
+  //0.000134, 0.004432, 0.053991, 0.241971, 0.398942, 0.000134, 0.004432, 0.053991,0.241971,
+  G4double LXe_RIND[NUMENTRIES] = {1.57,1.57,1.57,1.57,1.57,1.57,1.57,1.57,1.57,
+          1.57, 1.57, 1.57, 1.57, 1.57, 1.57, 1.57, 1.57, 1.57
+          ,1.57, 1.57};
   
-  G4double LXe_PP[NUMENTRIES] = {6.6*eV,6.7*eV,6.8*eV,6.9*eV,7.0*eV, 7.1*eV,7.2*eV,7.3*eV,7.4*eV};
-  
-  G4double LXe_SCINT[NUMENTRIES] = {0.000134, 0.004432, 0.053991, 0.241971, 0.398942, 0.000134, 0.004432, 0.053991,0.241971};
-  
-  G4double LXe_RIND[NUMENTRIES] = { 1.57, 1.57, 1.57, 1.57, 1.57, 1.57, 1.57, 1.57, 1.57};
-  
-  G4double LXe_ABSL[NUMENTRIES] = { 35.*cm, 35.*cm, 35.*cm, 35.*cm, 35.*cm, 35.*cm, 35.*cm, 35.*cm, 35.*cm };
+  G4double LXe_ABSL[NUMENTRIES] = { 35.*cm, 35.*cm, 35.*cm, 35.*cm, 35.*cm, 35.*cm, 35.*cm, 35.*cm,
+          35.*cm, 35.*cm, 35.*cm, 35.*cm, 35.*cm, 35.*cm, 35.*cm, 35.*cm, 35.*cm
+          , 35.*cm, 35.*cm};
   
   G4MaterialPropertiesTable* LXe_MPT = new G4MaterialPropertiesTable();
   

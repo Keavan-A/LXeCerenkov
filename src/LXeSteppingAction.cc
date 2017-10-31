@@ -54,6 +54,24 @@ LXeSteppingAction::~LXeSteppingAction()
 
 void LXeSteppingAction::UserSteppingAction(const G4Step* step)
 {
+  /*
+  G4cout<<step->GetTrack()->GetDefinition()->GetParticleName()<<G4endl;
+  G4cout<<step->GetNumberOfSecondariesInCurrentStep()<<G4endl;
+  G4cout<<step->IsFirstStepInVolume()<<G4endl;
+  */
+
+  if(step->IsFirstStepInVolume() && step->GetTrack()->GetDefinition()->GetParticleName()=="opticalphoton"){
+    G4Track* curTrack = step->GetTrack();
+    const G4VProcess* proc = curTrack->GetCreatorProcess();
+    //const char* pName = curTrack->GetDefinition()->GetParticleName();
+    const G4double dpEnergy = curTrack->GetDynamicParticle()->GetKineticEnergy();
+      if(proc->GetProcessName()=="Scintillation"){
+          LXeEventAction::addScintEnergy(dpEnergy);
+      }else if(proc->GetProcessName()=="Cerenkov"){
+          LXeEventAction::addCerenEnergy(dpEnergy);
+      }
+
+  }
   if (!fScoringVolume) { 
     const LXeDetectorConstruction* detectorConstruction
       = static_cast<const LXeDetectorConstruction*>
