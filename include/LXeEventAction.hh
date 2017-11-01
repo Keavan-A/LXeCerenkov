@@ -53,20 +53,15 @@ class LXeEventAction : public G4UserEventAction
     virtual void EndOfEventAction(const G4Event* event);
 
     void AddEdep(G4double edep) { fEdep += edep; }
-    static std::vector <G4double> getCerenEnergies();
-    static unsigned long getNumCerenEnergies();
 
-    static void addCerenEnergy(G4double NRG);
+    void AddCeren(G4double NRG){ cerenEnergies.push_back(NRG); }
 
-    static std::vector <G4double> getScintEnergies();
-    static unsigned long getNumScintEnergies();
-    static void addScintEnergy(G4double NRG);
-
-    virtual void resetCeren();
-    virtual void resetScint();
+    void AddScint(G4double NRG){ scintEnergies.push_back(NRG); }
 private:
     LXeRunAction* fRunAction;
     //G4Step* fStep;
+    std::vector<G4double> scintEnergies;
+    std::vector<G4double> cerenEnergies;
     G4double     fEdep;
 };
 

@@ -28,7 +28,6 @@
 /// \file LXeEventAction.cc
 /// \brief Implementation of the LXeEventAction class
 
-//#include <mutex>
 
 #include "LXeTrackingAction.hh"
 #include "LXeEventAction.hh"
@@ -39,20 +38,13 @@
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-static std::vector<G4double> scintEnergies;
-static std::vector<G4double> cerenEnergies;
-
-
-static std::ofstream cerenOut;
-static std::ofstream scintOut;
-
-//static std::mutex cerenLock;
-//static std::mutex scintLock;
-
 LXeEventAction::LXeEventAction(LXeRunAction* runAction)
 : G4UserEventAction(),
   fRunAction(runAction),
-  fEdep(0.)
+  fEdep(0.),
+  scintEnergies(),
+  cerenEnergies()
+
 {} 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -72,61 +64,15 @@ void LXeEventAction::BeginOfEventAction(const G4Event*)
 void LXeEventAction::EndOfEventAction(const G4Event*)
 {
 
-  unsigned long nC = cerenEnergies.size();
-  unsigned long nS = scintEnergies.size();
-  // accumulate statistics in run action
-  //G4cout << "Cerenkov photons created = " << nC << G4endl;
-  //G4cout << "Scintillation photons created = " << nS << G4endl;
-
-  //cerenLock.lock();
-    cerenOut.open("cerenkovEnergies.csv", std::ios::app);
-    for(unsigned long i=0;i<nC;i++){
-      cerenOut << cerenEnergies[i] << ",";
-    }
-    resetCeren();
-    cerenOut.close();
-//  cerenLock.unlock();
-
-  //scintLock.lock();
-    scintOut.open("scintillationEnergies.csv", std::ios::app);
-    for(unsigned long i=0;i<nS;i++){
-      scintOut << scintEnergies[i] << ",";
-    }
-    resetScint();
-    scintOut.close();
-  //scintLock.unlock();
   fRunAction->AddEdep(fEdep);
+  for(G4double c : cerenEnergies) {
+    fRunAction->AddCeren(c);
+  }
+  for(G4double s : scintEnergies) {
+    fRunAction->AddScint(s);
+  }
+  scintEnergies.clear();
+  cerenEnergies.clear();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-std::vector <G4double> LXeEventAction::getCerenEnergies(){
-  return cerenEnergies;
-}
-unsigned long LXeEventAction::getNumCerenEnergies(){
-  return cerenEnergies.size();
-}
-void LXeEventAction::addCerenEnergy(G4double NRG){
-  cerenEnergies.push_back(NRG);
-}
-
-std::vector <G4double> LXeEventAction::getScintEnergies(){
-  return scintEnergies;
-}
-unsigned long LXeEventAction::getNumScintEnergies(){
-  unsigned long s = scintEnergies.size();
-  //std::vector<G4double> scintEnergiesTest = scintEnergies;
-  return s;
-}
-void LXeEventAction::addScintEnergy(G4double NRG){
-  scintEnergies.push_back(NRG);
-  //unsigned long s = scintEnergies.size();
-  //std::vector<G4double> scintEnergiesTest = scintEnergies;
-}
-
-void LXeEventAction::resetScint() {
-  scintEnergies.clear();
-}
-
-void LXeEventAction::resetCeren() {
-  cerenEnergies.clear();
-}

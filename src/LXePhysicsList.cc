@@ -70,7 +70,7 @@ LXePhysicsList::LXePhysicsList()
 : G4VModularPhysicsList(){
   SetVerboseLevel(1);
 
-  defaultCutValue=1.0*mm;0.5*eV;
+  defaultCutValue=1.0*mm;//0.5*eV;
   // Default physics
   RegisterPhysics(new G4DecayPhysics());
 
@@ -83,7 +83,7 @@ LXePhysicsList::LXePhysicsList()
 
   // Optical Physics
   G4OpticalPhysics* opticalPhysics = new G4OpticalPhysics();
-  opticalPhysics->SetCerenkovStackPhotons(true);
+  //opticalPhysics->SetCerenkovStackPhotons(true);
   //opticalPhysics->SetWLSTimeProfile("delta");
   opticalPhysics->SetScintillationYieldFactor(1.0);// Percentage of scintillation light we actually produce
   opticalPhysics->SetScintillationExcitationRatio(0.0);

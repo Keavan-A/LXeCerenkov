@@ -49,7 +49,9 @@
 LXeRunAction::LXeRunAction()
 : G4UserRunAction(),
   fEdep(0.),
-  fEdep2(0.)
+  fEdep2(0.),
+  scintillationEnergies(0.),
+  cerenkovEnergies(0.)
 { 
   // add new units for dose
   // 
@@ -66,7 +68,9 @@ LXeRunAction::LXeRunAction()
   // Register accumulable to the accumulable manager
   G4AccumulableManager* accumulableManager = G4AccumulableManager::Instance();
   accumulableManager->RegisterAccumulable(fEdep);
-  accumulableManager->RegisterAccumulable(fEdep2); 
+  accumulableManager->RegisterAccumulable(fEdep2);
+  accumulableManager->RegisterAccumulable(&scintillationEnergies);
+  accumulableManager->RegisterAccumulable(&cerenkovEnergies);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -92,15 +96,40 @@ void LXeRunAction::BeginOfRunAction(const G4Run*)
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
+void LXeRunAction::storeEnergies(){
+  std::ofstream cerenOut;
+  std::ofstream scintOut;
+
+  std::vector<G4double> cerenEnergies = cerenkovEnergies.getEnergies();
+  std::vector<G4double> scintEnergies = scintillationEnergies.getEnergies();
+  unsigned long nC = cerenEnergies.size();
+  unsigned long nS = scintEnergies.size();
+  // accumulate statistics in run action
+
+    cerenOut.open("cerenkovEnergies.csv", std::ios::app);
+    for(unsigned long i=0;i<nC;i++){
+      cerenOut << cerenEnergies[i] << ",";
+    }
+    cerenOut.close();
+
+    scintOut.open("scintillationEnergies.csv", std::ios::app);
+    for(unsigned long i=0;i<nS;i++){
+      scintOut << scintEnergies[i] << ",";
+    }
+    scintOut.close();
+}
+
+
 void LXeRunAction::EndOfRunAction(const G4Run* run)
 {
+
   G4int nofEvents = run->GetNumberOfEvent();
   if (nofEvents == 0) return;
 
   // Merge accumulables 
   G4AccumulableManager* accumulableManager = G4AccumulableManager::Instance();
   accumulableManager->Merge();
-
+  storeEnergies();
   // Compute dose = total energy deposit in a run and its variance
   //
   G4double edep  = fEdep.GetValue();
@@ -165,5 +194,11 @@ void LXeRunAction::AddEdep(G4double edep)
   fEdep2 += edep*edep;
 }
 
+void LXeRunAction::AddScint(G4double scintEnergy) {
+  scintillationEnergies.AddEnergy(scintEnergy);
+}
 
+void LXeRunAction::AddCeren(G4double cerenEnergy) {
+  cerenkovEnergies.AddEnergy(cerenEnergy);
+}
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

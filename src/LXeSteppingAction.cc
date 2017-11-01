@@ -66,9 +66,11 @@ void LXeSteppingAction::UserSteppingAction(const G4Step* step)
     //const char* pName = curTrack->GetDefinition()->GetParticleName();
     const G4double dpEnergy = curTrack->GetDynamicParticle()->GetKineticEnergy();
       if(proc->GetProcessName()=="Scintillation"){
-          LXeEventAction::addScintEnergy(dpEnergy);
+          //LXeEventAction::addScintEnergy(dpEnergy);
+          fEventAction->AddScint(dpEnergy);
       }else if(proc->GetProcessName()=="Cerenkov"){
-          LXeEventAction::addCerenEnergy(dpEnergy);
+          //LXeEventAction::addCerenEnergy(dpEnergy);
+          fEventAction->AddCeren(dpEnergy);
       }
 
   }
