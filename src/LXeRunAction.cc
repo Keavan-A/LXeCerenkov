@@ -129,7 +129,7 @@ void LXeRunAction::EndOfRunAction(const G4Run* run)
   // Merge accumulables 
   G4AccumulableManager* accumulableManager = G4AccumulableManager::Instance();
   accumulableManager->Merge();
-  storeEnergies();
+
   // Compute dose = total energy deposit in a run and its variance
   //
   G4double edep  = fEdep.GetValue();
@@ -167,6 +167,7 @@ void LXeRunAction::EndOfRunAction(const G4Run* run)
     G4cout
      << G4endl
      << "--------------------End of Global Run-----------------------";
+    storeEnergies();
   }
   else {
     G4cout
