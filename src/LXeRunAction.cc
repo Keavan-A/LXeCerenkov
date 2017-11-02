@@ -96,27 +96,29 @@ void LXeRunAction::BeginOfRunAction(const G4Run*)
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void LXeRunAction::storeEnergies(){
-  std::ofstream cerenOut;
-  std::ofstream scintOut;
-
-  std::vector<G4double> cerenEnergies = cerenkovEnergies.getEnergies();
-  std::vector<G4double> scintEnergies = scintillationEnergies.getEnergies();
-  unsigned long nC = cerenEnergies.size();
-  unsigned long nS = scintEnergies.size();
-  // accumulate statistics in run action
+void LXeRunAction::storeEnergies(const char *type) {
+  if (type == "cerenkov") {
+    std::vector<G4double> cerenEnergies = cerenkovEnergies.getEnergies();
+    unsigned long nC = cerenEnergies.size();
+    std::ofstream cerenOut;
 
     cerenOut.open("cerenkovEnergies.csv", std::ios::app);
-    for(unsigned long i=0;i<nC;i++){
+    for (unsigned long i = 0; i < nC; i++) {
       cerenOut << cerenEnergies[i] << ",";
     }
     cerenOut.close();
+  }
+  else if (type == "scintillation") {
+    std::vector<G4double> scintEnergies = scintillationEnergies.getEnergies();
+    unsigned long nS = scintEnergies.size();
+    std::ofstream scintOut;
 
     scintOut.open("scintillationEnergies.csv", std::ios::app);
-    for(unsigned long i=0;i<nS;i++){
+    for (unsigned long i = 0; i < nS; i++) {
       scintOut << scintEnergies[i] << ",";
     }
     scintOut.close();
+  }
 }
 
 
@@ -167,7 +169,8 @@ void LXeRunAction::EndOfRunAction(const G4Run* run)
     G4cout
      << G4endl
      << "--------------------End of Global Run-----------------------";
-    storeEnergies();
+    storeEnergies("cerenkov");
+    storeEnergies("scintillation");
   }
   else {
     G4cout
@@ -197,9 +200,19 @@ void LXeRunAction::AddEdep(G4double edep)
 
 void LXeRunAction::AddScint(G4double scintEnergy) {
   scintillationEnergies.AddEnergy(scintEnergy);
+  unsigned long nums = scintillationEnergies.getLength();
+  if (nums>=500000){
+    storeEnergies("scintillation");
+    scintillationEnergies.Reset();
+  }
 }
 
 void LXeRunAction::AddCeren(G4double cerenEnergy) {
   cerenkovEnergies.AddEnergy(cerenEnergy);
+  unsigned long nums = cerenkovEnergies.getLength();
+  if (nums>=500000){
+    storeEnergies("cerenkov");
+    cerenkovEnergies.Reset();
+  }
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

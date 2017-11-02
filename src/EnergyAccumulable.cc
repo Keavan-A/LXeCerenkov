@@ -11,6 +11,9 @@ void EnergyAccumulable::AddEnergy(G4double NRG){
 std::vector<G4double > EnergyAccumulable::getEnergies(){
   return Energies;
 }
+unsigned long EnergyAccumulable::getLength(){
+  return Energies.size();
+}
 void EnergyAccumulable::Merge(const G4VAccumulable& other)
 {
   const EnergyAccumulable& otherEnergyAccumulable = static_cast<const EnergyAccumulable&>(other);
